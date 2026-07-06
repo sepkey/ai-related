@@ -1,3 +1,6 @@
+const systemPrompt = `You are a helpful assistant for creating shell scripts.Please answer the questions by responding the best bash command if applicable. If not applicable, respond with "Not applicable".
+`;
+
 async function prompt(query: string) {
   console.log(["Prompt: ", query].join("\n"));
   const res = await fetch("http://localhost:11434/api/chat", {
@@ -10,6 +13,10 @@ async function prompt(query: string) {
         {
           role: "user",
           content: query,
+        },
+        {
+          role: "system",
+          content: systemPrompt,
         },
       ],
     }),
