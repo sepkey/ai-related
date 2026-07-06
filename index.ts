@@ -1,6 +1,6 @@
 import { styleText } from "node:util";
 
-const systemPrompt = `You are a helpful assistant. Please do what user asks. If user ask you about time please respond with ${new Date().toLocaleString()}
+const systemPrompt = `You are a helpful assistant. Please do what user asks. If user ask you about time please respond with {{{get_time}}}
 `;
 
 async function prompt(query: string) {
@@ -39,8 +39,10 @@ async function prompt(query: string) {
 
   console.log(
     [
+      styleText(["gray"], "--------------"),
       styleText(["bold", "yellow"], "Response: "),
       styleText(["gray"], content),
+      styleText(["gray"], "--------------"),
     ].join("\n"),
   );
 
@@ -48,4 +50,8 @@ async function prompt(query: string) {
 }
 
 const query = process.argv.slice(2).join(" ");
-await prompt(query);
+const content = await prompt(query);
+
+if (content.includes("{{{get_time}}}")) {
+  await prompt("The time is: " + new Date().toLocaleString());
+}
