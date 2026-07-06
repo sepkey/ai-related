@@ -1,16 +1,18 @@
 import { styleText } from "node:util";
 
-const systemPrompt = `You are a helpful assistant. Please do what user asks. If user ask you about time please respond with {{{get_time}}}
+const systemPrompt = `You are a helpful assistant. Please do what user asks. If user ask you about time please respond with {{{get_time}}} if the time is not included in the message otherwise tell the time.
 `;
 
+let context = "";
 async function prompt(query: string) {
+  context += `${context}\n${query}`;
   console.log(
     [
       styleText(["gray"], "--------------"),
       styleText(["bold", "green"], "System Prompt: "),
       styleText(["gray"], systemPrompt),
       styleText(["bold", "blue"], "User Prompt: "),
-      styleText(["gray"], query),
+      styleText(["gray"], context),
     ].join("\n"),
   );
 
@@ -23,7 +25,7 @@ async function prompt(query: string) {
       messages: [
         {
           role: "user",
-          content: query,
+          content: context,
         },
         {
           role: "system",
@@ -41,7 +43,7 @@ async function prompt(query: string) {
     [
       styleText(["gray"], "--------------"),
       styleText(["bold", "yellow"], "Response: "),
-      styleText(["gray"], content),
+      content,
       styleText(["gray"], "--------------"),
     ].join("\n"),
   );
@@ -52,6 +54,11 @@ async function prompt(query: string) {
 const query = process.argv.slice(2).join(" ");
 const content = await prompt(query);
 
+function getTime() {
+  const now = new Date().toLocaleString();
+  return `The current time is: ${now}`;
+}
+
 if (content.includes("{{{get_time}}}")) {
-  await prompt("The time is: " + new Date().toLocaleString());
+  await prompt(getTime());
 }
