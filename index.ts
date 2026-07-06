@@ -1,8 +1,19 @@
-const systemPrompt = `You are a helpful assistant for creating shell scripts.Please answer the questions by responding the best bash command if applicable. If not applicable, respond with "Not applicable".
+import { styleText } from "node:util";
+
+const systemPrompt = `You are a helpful assistant. Please do what user asks. If user ask you about time please respond with ${new Date().toLocaleString()}
 `;
 
 async function prompt(query: string) {
-  console.log(["Prompt: ", query].join("\n"));
+  console.log(
+    [
+      styleText(["gray"], "--------------"),
+      styleText(["bold", "green"], "System Prompt: "),
+      styleText(["gray"], systemPrompt),
+      styleText(["bold", "blue"], "User Prompt: "),
+      styleText(["gray"], query),
+    ].join("\n"),
+  );
+
   const res = await fetch("http://localhost:11434/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,7 +37,12 @@ async function prompt(query: string) {
 
   const content = json.message.content;
 
-  console.log(["Response: ", content].join("\n"));
+  console.log(
+    [
+      styleText(["bold", "yellow"], "Response: "),
+      styleText(["gray"], content),
+    ].join("\n"),
+  );
 
   return content;
 }
