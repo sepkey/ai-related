@@ -18,7 +18,9 @@
   },
   "type": "module",
   "dependencies": {
-    "typescript": "^6.0.3"
+    "gray-matter": "^4.0.3",
+    "typescript": "^6.0.3",
+    "zx": "^8.8.5"
   },
   "devDependencies": {
     "@types/node": "^26.1.0"

@@ -1,5 +1,33 @@
+import matter from "gray-matter";
 import fs, { readFileSync } from "node:fs";
 import { styleText } from "node:util";
+import { $ } from "zx";
+
+type Skill = {
+  address: string;
+  name: string;
+  description: string;
+};
+
+async function readSkills(): Promise<Skill[]> {
+  const list = await $`ls -1 ./agents/skills/**/*.md`;
+
+  const skills = list.stdout.split("\n").filter((line) => line.trim() !== "");
+
+  return skills.reduce((acc, skill) => {
+    const content = fs.readFileSync(skill, "utf-8");
+
+    const { data: frontmatter } = matter(content);
+
+    acc.push({ address: skill, ...frontmatter });
+
+    return acc;
+  }, [] as Skill[]);
+}
+
+// process.exit(0);
+
+const skills = await readSkills();
 
 const systemPrompt = `You are a helpful assistant Please do what user asks.
 User always put update in the query, you should check the updates if the task is already done you should not do it again and continue.
@@ -12,12 +40,22 @@ you have access to the following tools:
 
 you can use tools if you need by responding with the following syntax:
 <tool_call>{"name":<name>,"arguments":{...}}</tool_call>
+
+You have access to the following skills:
+${skills
+  .map(
+    (skill) =>
+      `- ${skill.name}: ${skill.description} (address: ${skill.address})`,
+  )
+  .join("\n")}
+
+  You can learn skills  if you need by responding with the following syntax:
+<learn_skill>{"address":<address>}</learn_skill>
 `;
 
 let context = readFileSync("AGENT.md", "utf-8");
-const skill = readFileSync("./agents/skills/pass/SKILL.md", "utf-8");
 async function prompt(query: string) {
-  context += `${context}\n**UPDATE**\:${query}\n${skill}`;
+  context += `${context}\n**UPDATE**\:${query}`;
   console.log(
     [
       styleText(["gray"], "--------------"),
