@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import fs, { readFileSync } from "node:fs";
 import { styleText } from "node:util";
 
 const systemPrompt = `You are a helpful assistant Please do what user asks.
@@ -14,7 +14,7 @@ you can use tools if you need by responding with the following syntax:
 <tool_call>{"name":<name>,"arguments":{...}}</tool_call>
 `;
 
-let context = "";
+let context = readFileSync("AGENT.md", "utf-8");
 async function prompt(query: string) {
   context += `${context}\n**UPDATE**\:${query}`;
   console.log(
