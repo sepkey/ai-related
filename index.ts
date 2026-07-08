@@ -15,8 +15,9 @@ you can use tools if you need by responding with the following syntax:
 `;
 
 let context = readFileSync("AGENT.md", "utf-8");
+const skill = readFileSync("./agents/skills/pass/SKILL.md", "utf-8");
 async function prompt(query: string) {
-  context += `${context}\n**UPDATE**\:${query}`;
+  context += `${context}\n**UPDATE**\:${query}\n${skill}`;
   console.log(
     [
       styleText(["gray"], "--------------"),
