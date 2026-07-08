@@ -36,12 +36,7 @@ If user ask you about time please respond with {{{get_time}}} if the time is not
 you have access to the following tools:
 1.get_time {}: returns the current time in a human-readable format.
 2.write_file {fileName:string,content:string}: writes the specified content to a file at the given fileName.
-
-
-you can use tools if you need by responding with the following syntax:
-<tool_call>{"name":<name>,"arguments":{...}}</tool_call>
-
-You have access to the following skills:
+3.learn_skill {address:string}: learns a new skill from the specified skill_address. You have access to the following skills:
 ${skills
   .map(
     (skill) =>
@@ -49,8 +44,13 @@ ${skills
   )
   .join("\n")}
 
-  You can learn skills  if you need by responding with the following syntax:
-<learn_skill>{"address":<address>}</learn_skill>
+
+
+
+you can use tools if you need by responding with the following syntax:
+<tool_call>{"name":<name>,"arguments":{...}}</tool_call>
+
+
 `;
 
 let context = readFileSync("AGENT.md", "utf-8");
